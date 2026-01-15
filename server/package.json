@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "@fastify/cors": "^9.0.1",
+    "cron-parser": "^4.9.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.2",
+    "nanoid": "^5.0.7",
+    "nodemailer": "^6.9.13"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.14",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  }
+}
