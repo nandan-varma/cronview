@@ -1,7 +1,10 @@
 import 'dotenv/config'
 import Fastify from 'fastify'
+import { migrate } from './db/migrate.js'
 
 const fastify = Fastify({ logger: { level: 'info' } })
+
+migrate()
 
 fastify.get('/health', async () => ({ ok: true }))
 
