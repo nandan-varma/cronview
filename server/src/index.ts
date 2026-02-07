@@ -3,6 +3,7 @@ import Fastify from 'fastify'
 import { migrate } from './db/migrate.js'
 import corsPlugin from './plugins/cors.js'
 import jobsRoutes from './routes/jobs.js'
+import runsRoutes from './routes/runs.js'
 
 const fastify = Fastify({ logger: { level: 'info' } })
 
@@ -12,6 +13,7 @@ await fastify.register(corsPlugin)
 
 await fastify.register(async (app) => {
   await app.register(jobsRoutes)
+  await app.register(runsRoutes)
 }, { prefix: '/api' })
 
 fastify.get('/health', async () => ({ ok: true }))
