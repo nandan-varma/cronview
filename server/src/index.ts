@@ -2,6 +2,7 @@ import 'dotenv/config'
 import Fastify from 'fastify'
 import { migrate } from './db/migrate.js'
 import corsPlugin from './plugins/cors.js'
+import statsRoutes from './routes/stats.js'
 import jobsRoutes from './routes/jobs.js'
 import runsRoutes from './routes/runs.js'
 
@@ -12,6 +13,7 @@ migrate()
 await fastify.register(corsPlugin)
 
 await fastify.register(async (app) => {
+  await app.register(statsRoutes)
   await app.register(jobsRoutes)
   await app.register(runsRoutes)
 }, { prefix: '/api' })
