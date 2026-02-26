@@ -5,6 +5,7 @@ import corsPlugin from './plugins/cors.js'
 import statsRoutes from './routes/stats.js'
 import jobsRoutes from './routes/jobs.js'
 import runsRoutes from './routes/runs.js'
+import importRoutes from './routes/import.js'
 import serversRoutes from './routes/servers.js'
 
 const fastify = Fastify({ logger: { level: 'info' } })
@@ -17,6 +18,7 @@ await fastify.register(async (app) => {
   await app.register(statsRoutes)
   await app.register(jobsRoutes)
   await app.register(runsRoutes)
+  await app.register(importRoutes)
   await app.register(serversRoutes)
 }, { prefix: '/api' })
 
