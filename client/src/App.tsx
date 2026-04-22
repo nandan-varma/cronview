@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Shell } from './components/layout/Shell.js'
+import { JobsPage } from './pages/JobsPage.js'
 
 export default function App() {
   return (
@@ -10,7 +11,15 @@ export default function App() {
           path="/jobs"
           element={
             <Shell onImport={() => {}}>
-              <div className="p-8 text-gray-400">Jobs coming soon…</div>
+              <JobsPage onImport={() => {}} />
+            </Shell>
+          }
+        />
+        <Route
+          path="/jobs/:id"
+          element={
+            <Shell onImport={() => {}}>
+              <JobsPage onImport={() => {}} />
             </Shell>
           }
         />
