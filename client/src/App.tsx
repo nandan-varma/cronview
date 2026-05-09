@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Shell } from './components/layout/Shell.js'
 import { JobsPage } from './pages/JobsPage.js'
 import { ImportPage } from './pages/ImportPage.js'
+import { ServersPage } from './pages/ServersPage.js'
 import { ImportModal } from './components/import/ImportModal.js'
 
 export default function App() {
@@ -39,6 +40,14 @@ export default function App() {
           element={
             <Shell onImport={() => setShowImport(true)}>
               <ImportPage />
+            </Shell>
+          }
+        />
+        <Route
+          path="/servers"
+          element={
+            <Shell onImport={() => setShowImport(true)}>
+              <ServersPage />
             </Shell>
           }
         />
