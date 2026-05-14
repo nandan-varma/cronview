@@ -4,6 +4,7 @@ import { Shell } from './components/layout/Shell.js'
 import { JobsPage } from './pages/JobsPage.js'
 import { ImportPage } from './pages/ImportPage.js'
 import { ServersPage } from './pages/ServersPage.js'
+import { SettingsPage } from './pages/SettingsPage.js'
 import { ImportModal } from './components/import/ImportModal.js'
 
 export default function App() {
@@ -48,6 +49,14 @@ export default function App() {
           element={
             <Shell onImport={() => setShowImport(true)}>
               <ServersPage />
+            </Shell>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <Shell onImport={() => setShowImport(true)}>
+              <SettingsPage />
             </Shell>
           }
         />
