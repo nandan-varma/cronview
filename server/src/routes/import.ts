@@ -16,9 +16,12 @@ interface ParsedJob {
 }
 
 function suggestName(command: string): string {
-  return command
-    .trim()
-    .replace(/^\/[^\s]+ /, '')
+  let cmd = command.trim()
+  if (cmd.startsWith('/')) {
+    const spaceIdx = cmd.indexOf(' ')
+    if (spaceIdx > 1 && !/\s/.test(cmd.slice(0, spaceIdx))) cmd = cmd.slice(spaceIdx + 1)
+  }
+  return cmd
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .toLowerCase()
@@ -101,7 +104,7 @@ export default async function (fastify: FastifyInstance) {
           VALUES (?, ?, ?, ?, ?, 1, ?, ?)
         `).run(id, name, pj.cronExpr, pj.command, serverId ?? null, now, now)
 
-        const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as JobRecord
+        const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord
         created.push({
           id: job.id,
           name: job.name,

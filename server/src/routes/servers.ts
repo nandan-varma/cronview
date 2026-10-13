@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
       INSERT INTO servers (id, name, host, agent_key, created_at) VALUES (?, ?, ?, ?, ?)
     `).run(id, name, host ?? null, agentKey, now)
 
-    const server = sqlite.prepare(`SELECT * FROM servers WHERE id = ?`).get(id) as ServerRecord
+    const server = sqlite.prepare(`SELECT * FROM servers WHERE id = ?`).get(id) as unknown as ServerRecord
     return reply.code(201).send({
       id: server.id,
       name: server.name,

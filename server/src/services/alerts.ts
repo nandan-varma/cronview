@@ -11,9 +11,9 @@ interface AlertConfig {
 export async function dispatchAlerts(jobId: string, runId: string) {
   const channels = sqlite
     .prepare(`SELECT * FROM alert_channels WHERE job_id = ? OR job_id IS NULL`)
-    .all(jobId) as AlertChannelRecord[]
+    .all(jobId) as unknown as AlertChannelRecord[]
 
-  const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(jobId) as JobRecord | undefined
+  const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(jobId) as unknown as JobRecord | undefined
   const run = sqlite.prepare(`SELECT * FROM runs WHERE id = ?`).get(runId) as RunRecord | undefined
 
   if (!job || !run) return
