@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { sqlite } from '../db/client.js'
+import { sqlite, getRow } from '../db/client.js'
 import { nanoid } from 'nanoid'
 import { normaliseAtSyntax, toHumanSchedule, getNextRuns, validateExpr } from '../services/cronParser.js'
 import type { JobRecord } from '../db/schema.js'
@@ -104,7 +104,7 @@ export default async function (fastify: FastifyInstance) {
           VALUES (?, ?, ?, ?, ?, 1, ?, ?)
         `).run(id, name, pj.cronExpr, pj.command, serverId ?? null, now, now)
 
-        const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord
+        const job = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, id)!
         created.push({
           id: job.id,
           name: job.name,

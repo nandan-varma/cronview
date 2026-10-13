@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { sqlite } from '../db/client.js'
+import { sqlite, getRow, getRows } from '../db/client.js'
 import { nanoid } from 'nanoid'
 import { toHumanSchedule, validateExpr, getNextRuns } from '../services/cronParser.js'
 import type { JobRecord, ServerRecord, RunRecord } from '../db/schema.js'
@@ -72,7 +72,7 @@ export default async function (fastify: FastifyInstance) {
     if (conditions.length) query += ` WHERE ${conditions.join(' AND ')}`
     query += ` ORDER BY name`
 
-    const allJobs = sqlite.prepare(query).all(...params) as unknown as JobRecord[]
+    const allJobs = getRows<JobRecord>(query, ...params)
 
     const result = []
     for (const job of allJobs) {
@@ -84,7 +84,7 @@ export default async function (fastify: FastifyInstance) {
       if (status && jobStatus !== status) continue
 
       const server = job.server_id
-        ? sqlite.prepare(`SELECT * FROM servers WHERE id = ?`).get(job.server_id) as unknown as ServerRecord | undefined
+        ? getRow<ServerRecord>(`SELECT * FROM servers WHERE id = ?`, job.server_id)
         : undefined
 
       result.push(jobToResponse(job, latestRun, server))
@@ -126,7 +126,7 @@ export default async function (fastify: FastifyInstance) {
       throw e
     }
 
-    const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord
+    const job = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, id)!
     return reply.code(201).send(jobToResponse(job, undefined, undefined))
   })
 
@@ -134,7 +134,7 @@ export default async function (fastify: FastifyInstance) {
     const { id } = req.params as { id: string }
     const body = req.body as Record<string, any>
 
-    const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord | undefined
+    const job = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, id)
     if (!job) return reply.code(404).send({ error: 'Job not found' })
 
     if (body.cronExpr) {
@@ -170,7 +170,7 @@ export default async function (fastify: FastifyInstance) {
       now, id
     )
 
-    const updated = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord
+    const updated = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, id)!
     return jobToResponse(updated, undefined, undefined)
   })
 
@@ -192,7 +192,7 @@ export default async function (fastify: FastifyInstance) {
 
   fastify.get('/jobs/:id/schedule', async (req, reply) => {
     const { id } = req.params as { id: string }
-    const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(id) as unknown as JobRecord | undefined
+    const job = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, id)
     if (!job) return reply.code(404).send({ error: 'Job not found' })
 
     const nextRuns = getNextRuns(job.cron_expr, 5, job.timezone ?? 'UTC')

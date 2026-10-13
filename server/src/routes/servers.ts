@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { sqlite } from '../db/client.js'
+import { sqlite, getRow } from '../db/client.js'
 import { nanoid } from 'nanoid'
 import type { ServerRecord } from '../db/schema.js'
 
@@ -23,7 +23,7 @@ export default async function (fastify: FastifyInstance) {
       INSERT INTO servers (id, name, host, agent_key, created_at) VALUES (?, ?, ?, ?, ?)
     `).run(id, name, host ?? null, agentKey, now)
 
-    const server = sqlite.prepare(`SELECT * FROM servers WHERE id = ?`).get(id) as unknown as ServerRecord
+    const server = getRow<ServerRecord>(`SELECT * FROM servers WHERE id = ?`, id)!
     return reply.code(201).send({
       id: server.id,
       name: server.name,

@@ -1,4 +1,4 @@
-import { sqlite } from '../db/client.js'
+import { sqlite, getRow, getRows } from '../db/client.js'
 import nodemailer from 'nodemailer'
 import type { AlertChannelRecord, JobRecord, RunRecord } from '../db/schema.js'
 
@@ -9,11 +9,9 @@ interface AlertConfig {
 }
 
 export async function dispatchAlerts(jobId: string, runId: string) {
-  const channels = sqlite
-    .prepare(`SELECT * FROM alert_channels WHERE job_id = ? OR job_id IS NULL`)
-    .all(jobId) as unknown as AlertChannelRecord[]
+  const channels = getRows<AlertChannelRecord>(`SELECT * FROM alert_channels WHERE job_id = ? OR job_id IS NULL`, jobId)
 
-  const job = sqlite.prepare(`SELECT * FROM jobs WHERE id = ?`).get(jobId) as unknown as JobRecord | undefined
+  const job = getRow<JobRecord>(`SELECT * FROM jobs WHERE id = ?`, jobId)
   const run = sqlite.prepare(`SELECT * FROM runs WHERE id = ?`).get(runId) as RunRecord | undefined
 
   if (!job || !run) return
