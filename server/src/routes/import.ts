@@ -23,7 +23,7 @@ function suggestName(command: string): string {
   }
   return cmd
     .replace(/[^a-zA-Z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/^-|-$/g, '')
     .toLowerCase()
     .slice(0, 50) || 'job'
 }
